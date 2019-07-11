@@ -1,12 +1,67 @@
 swagger: "2.0"
 info:
-  title: "API"
+  title: "Coupon Get Api"
   version: "1.0.0"
   contact:
     name: Yasumasa Takai
-    email: m.e.t.e.o.r.07@gmail
+    email: m.e.t.e.o.r.07@gmail.com
     url: https://github.com/kiyoneet
 tags:
-  - name: Metadata
-    description: Metadata related requests
-paths: {}
+  - name: coupon
+    description: coupon related requests
+paths:
+  /coupons:
+    get:
+      tags:
+        - coupon
+      parameters:
+        - in: query
+          name: title
+          type: string
+        - in: query
+          name: per_page
+          type: number
+        - in: query
+          name: next_token
+          type: string
+        - in: query
+          name: page_size
+          type: number
+      responses:
+        200:
+          description: couponの一覧を返す    
+          schema:
+            type: array
+            items: 
+              $ref: "#/difinitions/Coupon"
+        400:
+          description: parameter不正
+        404:
+          description: 検索結果なし
+
+  /qrcode/{id}:
+    get:
+      tags:
+        - coupon
+      produces:
+        - image/jpeg
+      responses:
+        200:
+          description: S3の
+      
+        
+           
+definitions:
+  Coupon:
+    type: object
+    properties: 
+      id:
+        type: string
+      title:
+        type: string
+      description:
+        type: string
+      thumnail_url:
+        type: string
+
+
