@@ -6,6 +6,8 @@ info:
     name: Yasumasa Takai
     email: m.e.t.e.o.r.07@gmail.com
     url: https://github.com/kiyoneet
+
+basePath: /Prod/v1
 tags:
   - name: coupon
     description: coupon related requests
@@ -14,54 +16,100 @@ paths:
     get:
       tags:
         - coupon
+      summary: クーポン情報の一覧を返す
       parameters:
         - in: query
           name: title
           type: string
+          maxLength: 20
+          description: タイトル検索用のワード
         - in: query
           name: per_page
           type: number
+          description: 取得件数
+          exclusiveMaximum: 100
         - in: query
-          name: next_token
+          name: exclusive_start_key
           type: string
-        - in: query
-          name: page_size
-          type: number
+          description: 次ページの開始位置
       responses:
         200:
-          description: couponの一覧を返す    
+          description: Successfull Operation 
           schema:
-            type: array
-            items: 
-              $ref: "#/difinitions/Coupon"
+            type: object
+            properties: 
+              exclusive_start_key:
+                type: object
+                description: 次ページがある場合次の開始位置のObject
+              data:
+                type: array
+                items:
+                  $ref: "#/definitions/Coupon"
         400:
           description: parameter不正
         404:
           description: 検索結果なし
 
-  /qrcode/{id}:
+  /coupons/{id}:
+     get:
+      summary: 指定IDのクーポンの詳細を返す
+      tags:
+        - coupon
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          required: true
+          name: id
+          type: string
+          description: クーポンID
+      responses:
+        200:
+          description: クーポン情報詳細
+          schema:
+            $ref: "#/definitions/Coupon"
+
+  /coupons/{id}/qrcode:
     get:
+      summary: クーポンのQRコードを返す
       tags:
         - coupon
       produces:
         - image/jpeg
+      parameters:
+        - in: path
+          required: true
+          name: id
+          type: string
+          description: クーポンID
       responses:
         200:
-          description: S3の
+          description: QR画像
+          schema:
+            type: string
+            format: byte
+        404:
+          description: 検索結果なし
       
-        
-           
 definitions:
   Coupon:
     type: object
     properties: 
       id:
         type: string
+        description: id
+        example: "0001245"
       title:
         type: string
+        description: タイトル
+        example: "【秋葉原店】全商品 10% OFF！"
       description:
         type: string
+        description: 説明文
+        example: "ご利用一回限り。他のクーポンとの併用はできません。クーポンをご利用いただいた場合、ポイントはつきません。"
       thumnail_url:
         type: string
+        description: クーポンの画像
+        example: "https://{s3のホスティングURL}"
 
 

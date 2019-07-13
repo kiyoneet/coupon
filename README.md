@@ -1,5 +1,6 @@
 # coupon
 ## 概要
+![image](./image/Coupon.jpg)
 小売店向けのクーポン配信用アプリのWebAPIです。
 
 HTTP/GETでクーポンの以下の情報が取得できます。
@@ -14,19 +15,19 @@ HTTP/GETでクーポンの以下の情報が取得できます。
 
 クーポンのタイトルで指定ワード検索をすることができます。
 
+
 ## Dynamo
 
-|Key|SortKey|Value|
-|---|---|---|
-|0000001|unixtime|{title:'hogehoge',description:'fugafuga',image:;'s3://***/00000001_{unixtime}_coupon.png',qr_code:'s3://***/0000001_{unixtime}_qrcode.jpg'}|
+|Key|Value|
+|---|---|
+|0000001|{title:'hogehoge',description:'fugafuga',start:'2019-01-01T00:00:00',end:'2019-01-01T23:59:59'}|
 
 ## S3
 
 ```
 root
-  |_0000001_{unixtime}_coupon.png
-  |_0000001_{unixtime}_qrcode.jpg
-  |_0000002_***
+  |_0000001_coupon.png
+  |_0000001_qrcode.jpg
 ```
 
 ## APIGateway
