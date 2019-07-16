@@ -1,5 +1,12 @@
+*.js
+*.d.ts
 
-# Created by https://www.gitignore.io/api/osx,node,linux,windows
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+
+
+ Created by https://www.gitignore.io/api/osx,node,linux,windows
 
 ### Linux ###
 *~

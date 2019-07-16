@@ -1,0 +1,33 @@
+{
+  "name": "coupon",
+  "version": "0.1.0",
+  "bin": {
+    "coupon": "bin/coupon.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.15",
+    "@types/node": "8.10.45",
+    "@typescript-eslint/eslint-plugin": "^1.12.0",
+    "@typescript-eslint/parser": "^1.12.0",
+    "aws-cdk": "^1.0.0",
+    "eslint": "^6.0.1",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "jest": "^24.8.0",
+    "prettier": "^1.18.2",
+    "ts-node": "^8.1.0",
+    "typescript": "^3.3.3333"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-apigateway": "^1.0.0",
+    "@aws-cdk/aws-dynamodb": "^1.0.0",
+    "@aws-cdk/aws-lambda": "^1.0.0",
+    "@aws-cdk/core": "^1.0.0",
+    "source-map-support": "^0.5.9"
+  }
+}

@@ -15,6 +15,9 @@ HTTP/GETでクーポンの以下の情報が取得できます。
 
 クーポンのタイトルで指定ワード検索をすることができます。
 
+## タスク
+https://trello.com/b/pW2NSlUH/coupon
+
 
 ## Dynamo
 
