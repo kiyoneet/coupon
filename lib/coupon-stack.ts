@@ -16,22 +16,31 @@ export class CouponStack extends cdk.Stack {
     });
 
     const getCouponList = new lambda.Function(this, 'getCouponList', {
-      code: new lambda.AssetCode('src/lambda/handlers/coupons'),
-      handler: 'coupon-list.handler',
+      code: new lambda.AssetCode('src/lambda'),
+      handler: 'handlers/coupons/coupon-list.handler',
       runtime: lambda.Runtime.NODEJS_10_X,
-      timeout: Duration.seconds(3)
+      timeout: Duration.seconds(3),
+      environment: {
+        TABLE_NAME: 'coupon'
+      }
     });
     const getCouponDetails = new lambda.Function(this, 'getCouponDetails', {
-      code: new lambda.AssetCode('src/lambda/handlers/coupons'),
-      handler: 'coupon-details.handler',
+      code: new lambda.AssetCode('src/lambda'),
+      handler: 'handlers/coupons/coupon-details.handler',
       runtime: lambda.Runtime.NODEJS_10_X,
-      timeout: Duration.seconds(3)
+      timeout: Duration.seconds(3),
+      environment: {
+        TABLE_NAME: 'coupon'
+      }
     });
     const getCouponQrcode = new lambda.Function(this, 'getCouponQrcode', {
-      code: new lambda.AssetCode('src/lambda/handlers/coupons'),
-      handler: 'coupon-qrcode.handler',
+      code: new lambda.AssetCode('src/lambda'),
+      handler: 'handlers/coupons/coupon-qrcode.handler',
       runtime: lambda.Runtime.NODEJS_10_X,
-      timeout: Duration.seconds(3)
+      timeout: Duration.seconds(3),
+      environment: {
+        TABLE_NAME: 'coupon'
+      }
     });
     couponTable.grantReadData(getCouponDetails);
     couponTable.grantReadData(getCouponList);
@@ -61,12 +70,12 @@ export class CouponStack extends cdk.Stack {
     qrcodeResource.addMethod('GET', getCouponQrcodeIntegration);
     addCorsOptions(qrcodeResource);
 
-    const thumnailBucketProps: Props = {
-      domain: this.node.tryGetContext('domain'),
-      subdomain: this.node.tryGetContext('subdomain'),
-      acmArn: this.node.tryGetContext('acmarn')
-    };
-    new StaticSiteConstruct(this, 'thumnailDeliverySite', thumnailBucketProps);
+    // const thumnailBucketProps: Props = {
+    //   domain: this.node.tryGetContext('domain'),
+    //   subdomain: this.node.tryGetContext('subdomain'),
+    //   acmArn: this.node.tryGetContext('acmarn')
+    // };
+    // new StaticSiteConstruct(this, 'thumnailDeliverySite', thumnailBucketProps);
   }
 }
 

@@ -1,18 +1,25 @@
-// import {CouponDynamodbTable}   from '../../infrastructures/coupons/coupon-dynamodb-table'
-// exports.handler = async (event: any) => {
-//     const id: string = event.params.id;
-//     const results = await CouponDynamodbTable.getCouponDetails(id);
-//         return results
+import { CouponDynamodbTable } from './../../infrastructures/coupons/coupon-dynamodb-table';
+import { APIGatewayEvent } from 'aws-lambda';
 
-// }
-
-exports.handler = async function(event: any) {
+exports.handler = async function(event: APIGatewayEvent) {
   console.log('request:', JSON.stringify(event, undefined, 2));
-  return {
-    statusCode: 200,
-    headers: {
-      'Content-Type': 'text/plain'
-    },
-    body: `Hello, CDK! You've hit ${event.path}`
-  };
+  const id: string = event.pathParameters!.id;
+  const data = await CouponDynamodbTable.getCoupnById(id);
+  if (!data) {
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+  } else {
+    return {
+      statusCode: 404,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: 'Not found'
+    };
+  }
 };
