@@ -4,6 +4,7 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as apigateway from '@aws-cdk/aws-apigateway';
 import { Duration, listMapper } from '@aws-cdk/core';
 import { Props, StaticSiteConstruct } from './stactic-site-construct';
+import { GlobalSecondaryIndexProps } from '@aws-cdk/aws-dynamodb';
 export class CouponStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -14,6 +15,14 @@ export class CouponStack extends cdk.Stack {
       },
       tableName: 'coupon'
     });
+    const gsiProps: GlobalSecondaryIndexProps = {
+      indexName: 'title',
+      partitionKey: {
+        name: 'title',
+        type: dynamodb.AttributeType.STRING
+      }
+    };
+    couponTable.addGlobalSecondaryIndex(gsiProps);
 
     const getCouponList = new lambda.Function(this, 'getCouponList', {
       code: new lambda.AssetCode('src/lambda'),
