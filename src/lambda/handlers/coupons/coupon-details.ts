@@ -3,9 +3,10 @@ import { APIGatewayEvent } from 'aws-lambda';
 
 exports.handler = async function(event: APIGatewayEvent) {
   console.log('request:', JSON.stringify(event, undefined, 2));
-  const id: string = event.pathParameters!.id;
-  const data = await CouponDynamodbTable.getCoupnById(id);
-  if (!data) {
+  try {
+    const id: string = event.pathParameters!.id;
+    const data = await CouponDynamodbTable.getCoupnById(id);
+
     return {
       statusCode: 200,
       headers: {
@@ -13,13 +14,14 @@ exports.handler = async function(event: APIGatewayEvent) {
       },
       body: JSON.stringify(data)
     };
-  } else {
+  } catch (error) {
+    console.error(error);
     return {
-      statusCode: 404,
+      statusCode: 500,
       headers: {
         'Content-Type': 'application/json'
       },
-      body: 'Not found'
+      body: JSON.stringify({ message: 'Internal server error' })
     };
   }
 };
