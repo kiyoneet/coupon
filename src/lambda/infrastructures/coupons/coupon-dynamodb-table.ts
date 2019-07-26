@@ -1,26 +1,25 @@
 import * as AWS from 'aws-sdk';
-import { CouponItem } from '../../domains/coupons/coupon';
-import { DocumentClient } from 'aws-sdk/clients/dynamodb';
+
+import {
+  DocumentClient,
+  ScanOutput,
+  QueryOutput,
+  GetItemOutput
+} from 'aws-sdk/clients/dynamodb';
 
 const TABLE_NAME = process.env.TABLE_NAME!;
 const dynamoClient: DocumentClient = new AWS.DynamoDB.DocumentClient();
 
 export class CouponDynamodbTable {
-  /**
-     * getCoupnById
-id: string : Promise<Coupon>    */
-  public static async getCoupnById(id: string): Promise<CouponItem> {
+  public static async getCoupnById(id: string): Promise<GetItemOutput> {
     const param: DocumentClient.GetItemInput = {
       TableName: TABLE_NAME,
       Key: { id }
     };
-    const record: DocumentClient.GetItemOutput = await dynamoClient
-      .get(param)
-      .promise();
-    return record.Item as CouponItem;
+    return await dynamoClient.get(param).promise();
   }
 
-  public static async getByTitle(title: string): Promise<any> {
+  public static async getByTitle(title: string): Promise<QueryOutput> {
     const param: DocumentClient.QueryInput = {
       TableName: TABLE_NAME,
       IndexName: 'title',
@@ -32,28 +31,16 @@ id: string : Promise<Coupon>    */
         ':hkey': title
       }
     };
-    const record: DocumentClient.QueryOutput = await dynamoClient
-      .query(param)
-      .promise();
-    console.log(record);
-    return record.Items;
+    return await dynamoClient.query(param).promise();
   }
-  public static async list(): Promise<any> {
+  public static async scan(exclusiveStartKey?: {}): Promise<ScanOutput> {
     const param: DocumentClient.ScanInput = {
       TableName: TABLE_NAME
     };
-    let records: DocumentClient.ScanOutput = await dynamoClient
-      .scan(param)
-      .promise();
-    let items = records.Items;
-    while (records.LastEvaluatedKey) {
-      records = await dynamoClient
-        .scan(
-          Object.assign(param, { ExculusiveStartKey: records.LastEvaluatedKey })
-        )
-        .promise();
-      items = items!.concat(records.Items!);
+    if (exclusiveStartKey) {
+      param.ExclusiveStartKey = exclusiveStartKey;
     }
-    return items;
+
+    return await dynamoClient.scan(param).promise();
   }
 }

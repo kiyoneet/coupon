@@ -1,7 +1,7 @@
 import { CouponDynamodbTable } from './../../infrastructures/coupons/coupon-dynamodb-table';
-import { APIGatewayEvent } from 'aws-lambda';
+import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 
-exports.handler = async function(event: APIGatewayEvent) {
+exports.handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   console.log('request:', JSON.stringify(event, undefined, 2));
   try {
     const id: string = event.pathParameters!.id;
