@@ -1,18 +1,30 @@
-// import {CouponDynamodbTable}   from '../../infrastructures/coupons/coupon-dynamodb-table'
-// exports.handler = async (event: any) => {
-//     const id: string = event.params.id;
-//     const results = await CouponDynamodbTable.getCouponDetails(id);
-//         return results
+import { CouponDynamodbTable } from './../../infrastructures/coupons/coupon-dynamodb-table';
+import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { CoupnUsecase} from './../../domains/coupons/coupon-usecase'
 
-// }
-
-exports.handler = async function(event: any) {
+exports.handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   console.log('request:', JSON.stringify(event, undefined, 2));
-  return {
-    statusCode: 200,
-    headers: {
-      'Content-Type': 'text/plain'
-    },
-    body: `Hello, CDK! You've hit ${event.path}`
-  };
+  try {
+    const id: string = event.pathParameters!.id;
+    return await CoupnUsecase.getCouponDetails(id);
+    // const data = await CouponDynamodbTable.getCoupnById(id);
+
+    // return {
+    //   statusCode: 200,
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(data)
+    // };
+
+  } catch (error) {
+    console.error(error);
+    return {
+      statusCode: 500,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ message: 'Internal server error' })
+    };
+  }
 };

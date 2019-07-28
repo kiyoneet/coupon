@@ -4,6 +4,7 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as apigateway from '@aws-cdk/aws-apigateway';
 import { Duration, listMapper } from '@aws-cdk/core';
 import { Props, StaticSiteConstruct } from './stactic-site-construct';
+import { GlobalSecondaryIndexProps } from '@aws-cdk/aws-dynamodb';
 export class CouponStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -14,24 +15,41 @@ export class CouponStack extends cdk.Stack {
       },
       tableName: 'coupon'
     });
+    const gsiProps: GlobalSecondaryIndexProps = {
+      indexName: 'title',
+      partitionKey: {
+        name: 'title',
+        type: dynamodb.AttributeType.STRING
+      }
+    };
+    couponTable.addGlobalSecondaryIndex(gsiProps);
 
     const getCouponList = new lambda.Function(this, 'getCouponList', {
-      code: new lambda.AssetCode('src/lambda/handlers/coupons'),
-      handler: 'coupon-list.handler',
+      code: new lambda.AssetCode('src/lambda'),
+      handler: 'handlers/coupons/coupon-list.handler',
       runtime: lambda.Runtime.NODEJS_10_X,
-      timeout: Duration.seconds(3)
+      timeout: Duration.seconds(3),
+      environment: {
+        TABLE_NAME: 'coupon'
+      }
     });
     const getCouponDetails = new lambda.Function(this, 'getCouponDetails', {
-      code: new lambda.AssetCode('src/lambda/handlers/coupons'),
-      handler: 'coupon-details.handler',
+      code: new lambda.AssetCode('src/lambda'),
+      handler: 'handlers/coupons/coupon-details.handler',
       runtime: lambda.Runtime.NODEJS_10_X,
-      timeout: Duration.seconds(3)
+      timeout: Duration.seconds(3),
+      environment: {
+        TABLE_NAME: 'coupon'
+      }
     });
     const getCouponQrcode = new lambda.Function(this, 'getCouponQrcode', {
-      code: new lambda.AssetCode('src/lambda/handlers/coupons'),
-      handler: 'coupon-qrcode.handler',
+      code: new lambda.AssetCode('src/lambda'),
+      handler: 'handlers/coupons/coupon-qrcode.handler',
       runtime: lambda.Runtime.NODEJS_10_X,
-      timeout: Duration.seconds(3)
+      timeout: Duration.seconds(3),
+      environment: {
+        TABLE_NAME: 'coupon'
+      }
     });
     couponTable.grantReadData(getCouponDetails);
     couponTable.grantReadData(getCouponList);
@@ -64,7 +82,7 @@ export class CouponStack extends cdk.Stack {
     const thumnailBucketProps: Props = {
       domain: this.node.tryGetContext('domain'),
       subdomain: this.node.tryGetContext('subdomain'),
-      acmArn: this.node.tryGetContext('acmarn')
+      acmArn: this.node.tryGetContext('acmArn')
     };
     new StaticSiteConstruct(this, 'thumnailDeliverySite', thumnailBucketProps);
   }
