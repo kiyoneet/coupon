@@ -18,7 +18,7 @@ export class CoupnUsecase {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(items)
+      body: JSON.stringify({data: items})
     };
     return result;
   }
@@ -32,8 +32,10 @@ export class CoupnUsecase {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data.Item)
-    };
+      body: JSON.stringify(
+        data.Item
+      )
+    }
     return result;
   }
 
@@ -46,7 +48,7 @@ export class CoupnUsecase {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data.Items)
+      body: JSON.stringify({data: data.Items})
     };
     return result;
   }

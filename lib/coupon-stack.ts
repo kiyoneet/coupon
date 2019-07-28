@@ -79,12 +79,12 @@ export class CouponStack extends cdk.Stack {
     qrcodeResource.addMethod('GET', getCouponQrcodeIntegration);
     addCorsOptions(qrcodeResource);
 
-    // const thumnailBucketProps: Props = {
-    //   domain: this.node.tryGetContext('domain'),
-    //   subdomain: this.node.tryGetContext('subdomain'),
-    //   acmArn: this.node.tryGetContext('acmarn')
-    // };
-    // new StaticSiteConstruct(this, 'thumnailDeliverySite', thumnailBucketProps);
+    const thumnailBucketProps: Props = {
+      domain: this.node.tryGetContext('domain'),
+      subdomain: this.node.tryGetContext('subdomain'),
+      acmArn: this.node.tryGetContext('acmArn')
+    };
+    new StaticSiteConstruct(this, 'thumnailDeliverySite', thumnailBucketProps);
   }
 }
 

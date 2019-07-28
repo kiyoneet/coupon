@@ -1,35 +1,32 @@
-import { APIGatewayEvent } from 'aws-lambda';
-import { CouponDynamodbTable } from './../../infrastructures/coupons/coupon-dynamodb-table';
-import { stringLiteral } from '@babel/types';
+import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 
-exports.handler = async function(event: APIGatewayEvent) {
+import {CoupnUsecase } from './../../domains/coupons/coupon-usecase'
+
+exports.handler = async function(event: APIGatewayEvent): Promise<APIGatewayProxyResult> {
   console.log('request:', JSON.stringify(event, undefined, 2));
   try {
     if (event.queryStringParameters === null) {
-      const result = await CouponDynamodbTable.list();
-      return {
-        statusCode: 200,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(result)
-      };
+      return await CoupnUsecase.getAllCoupons();
     } else {
+      if (event.queryStringParameters.title === undefined) {
+        return {
+          statusCode: 400,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: 'required parameters title.'
+          })
+        }
+      }
       const title = event.queryStringParameters.title;
-      const result = await CouponDynamodbTable.getByTitle(title);
-      return {
-        statusCode: 200,
-        header: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(result)
-      };
+      return await CoupnUsecase.searchByTitle(title);
     }
   } catch (error) {
     console.error(error);
     return {
       statusCode: 500,
-      header: {
+      headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ message: 'Internal server error' })
