@@ -2,7 +2,7 @@ import cdk = require('@aws-cdk/core');
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as apigateway from '@aws-cdk/aws-apigateway';
-import { Duration, listMapper } from '@aws-cdk/core';
+import { Duration } from '@aws-cdk/core';
 import { Props, StaticSiteConstruct } from './stactic-site-construct';
 import { GlobalSecondaryIndexProps } from '@aws-cdk/aws-dynamodb';
 export class CouponStack extends cdk.Stack {

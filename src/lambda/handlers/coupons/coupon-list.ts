@@ -1,12 +1,14 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 
-import {CoupnUsecase } from './../../domains/coupons/coupon-usecase'
+import { CouponUsecase } from './../../domains/coupons/coupon-usecase';
 
-exports.handler = async function(event: APIGatewayEvent): Promise<APIGatewayProxyResult> {
+exports.handler = async function(
+  event: APIGatewayEvent
+): Promise<APIGatewayProxyResult> {
   console.log('request:', JSON.stringify(event, undefined, 2));
   try {
     if (event.queryStringParameters === null) {
-      return await CoupnUsecase.getAllCoupons();
+      return await CouponUsecase.getAllCoupons();
     } else {
       if (event.queryStringParameters.title === undefined) {
         return {
@@ -17,10 +19,10 @@ exports.handler = async function(event: APIGatewayEvent): Promise<APIGatewayProx
           body: JSON.stringify({
             message: 'required parameters title.'
           })
-        }
+        };
       }
       const title = event.queryStringParameters.title;
-      return await CoupnUsecase.searchByTitle(title);
+      return await CouponUsecase.searchByTitle(title);
     }
   } catch (error) {
     console.error(error);

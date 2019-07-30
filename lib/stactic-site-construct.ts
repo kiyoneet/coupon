@@ -1,10 +1,10 @@
 import * as cloudfront from '@aws-cdk/aws-cloudfront';
 import * as s3 from '@aws-cdk/aws-s3';
-import * as acm from '@aws-cdk/aws-certificatemanager';
-import * as route53 from '@aws-cdk/aws-route53';
-import * as targets from '@aws-cdk/aws-route53-targets/lib';
 import { Construct, CfnOutput } from '@aws-cdk/core';
-import { HostedZoneProps } from '@aws-cdk/aws-route53';
+// import * as acm from '@aws-cdk/aws-certificatemanager';
+// import * as route53 from '@aws-cdk/aws-route53';
+// import * as targets from '@aws-cdk/aws-route53-targets/lib';
+// import { HostedZoneProps } from '@aws-cdk/aws-route53';
 
 export interface Props {
   domain: string;
@@ -42,10 +42,9 @@ export class StaticSiteConstruct extends Construct {
         originConfigs: [
           {
             s3OriginSource: {
-              s3BucketSource: siteBucket,
+              s3BucketSource: siteBucket
             },
-            behaviors: [{ isDefaultBehavior: true }],
-
+            behaviors: [{ isDefaultBehavior: true }]
           }
         ],
         priceClass: cloudfront.PriceClass.PRICE_CLASS_ALL
