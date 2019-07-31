@@ -1,8 +1,8 @@
-import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { CouponUsecase } from './../../domains/coupons/coupon-usecase';
 
 export async function handler(
-  event: APIGatewayEvent
+  event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> {
   console.log('request:', JSON.stringify(event, undefined, 2));
   try {

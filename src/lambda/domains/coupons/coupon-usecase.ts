@@ -9,7 +9,7 @@ export class CouponUsecase {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        data: CouponDynamodbTable.scan()
+        data: await CouponDynamodbTable.scan()
       })
     };
     return result;
@@ -23,7 +23,7 @@ export class CouponUsecase {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(CouponDynamodbTable.getCoupnById(id))
+      body: JSON.stringify(await CouponDynamodbTable.getCoupnById(id))
     };
     return result;
   }
@@ -37,7 +37,7 @@ export class CouponUsecase {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        data: CouponDynamodbTable.getByTitle(title)
+        data: await CouponDynamodbTable.getByTitle(title)
       })
     };
     return result;

@@ -1,9 +1,8 @@
-import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
-
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { CouponUsecase } from './../../domains/coupons/coupon-usecase';
 
-exports.handler = async function(
-  event: APIGatewayEvent
+export async function handler(
+  event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> {
   console.log('request:', JSON.stringify(event, undefined, 2));
   try {
@@ -34,4 +33,4 @@ exports.handler = async function(
       body: JSON.stringify({ message: 'Internal server error' })
     };
   }
-};
+}
