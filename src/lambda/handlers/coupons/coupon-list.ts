@@ -1,12 +1,13 @@
-import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { CouponUsecase } from './../../domains/coupons/coupon-usecase';
 
-import {CoupnUsecase } from './../../domains/coupons/coupon-usecase'
-
-exports.handler = async function(event: APIGatewayEvent): Promise<APIGatewayProxyResult> {
+export async function handler(
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> {
   console.log('request:', JSON.stringify(event, undefined, 2));
   try {
     if (event.queryStringParameters === null) {
-      return await CoupnUsecase.getAllCoupons();
+      return await CouponUsecase.getAllCoupons();
     } else {
       if (event.queryStringParameters.title === undefined) {
         return {
@@ -17,10 +18,10 @@ exports.handler = async function(event: APIGatewayEvent): Promise<APIGatewayProx
           body: JSON.stringify({
             message: 'required parameters title.'
           })
-        }
+        };
       }
       const title = event.queryStringParameters.title;
-      return await CoupnUsecase.searchByTitle(title);
+      return await CouponUsecase.searchByTitle(title);
     }
   } catch (error) {
     console.error(error);
@@ -32,4 +33,4 @@ exports.handler = async function(event: APIGatewayEvent): Promise<APIGatewayProx
       body: JSON.stringify({ message: 'Internal server error' })
     };
   }
-};
+}
