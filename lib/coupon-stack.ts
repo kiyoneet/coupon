@@ -2,7 +2,7 @@ import cdk = require('@aws-cdk/core');
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as apigateway from '@aws-cdk/aws-apigateway';
-import { Duration, listMapper } from '@aws-cdk/core';
+import { Duration } from '@aws-cdk/core';
 import { Props, StaticSiteConstruct } from './stactic-site-construct';
 import { GlobalSecondaryIndexProps } from '@aws-cdk/aws-dynamodb';
 export class CouponStack extends cdk.Stack {
@@ -42,18 +42,9 @@ export class CouponStack extends cdk.Stack {
         TABLE_NAME: 'coupon'
       }
     });
-    const getCouponQrcode = new lambda.Function(this, 'getCouponQrcode', {
-      code: new lambda.AssetCode('src/lambda'),
-      handler: 'handlers/coupons/coupon-qrcode.handler',
-      runtime: lambda.Runtime.NODEJS_10_X,
-      timeout: Duration.seconds(3),
-      environment: {
-        TABLE_NAME: 'coupon'
-      }
-    });
+    
     couponTable.grantReadData(getCouponDetails);
     couponTable.grantReadData(getCouponList);
-    couponTable.grantReadData(getCouponQrcode);
 
     const restApi = new apigateway.RestApi(this, 'CouponApi', {
       restApiName: 'coupon-api'
@@ -71,13 +62,6 @@ export class CouponStack extends cdk.Stack {
     );
     idResource.addMethod('GET', getCouponDetailsIntegration);
     addCorsOptions(idResource);
-
-    const qrcodeResource = idResource.addResource('qrcode');
-    const getCouponQrcodeIntegration = new apigateway.LambdaIntegration(
-      getCouponQrcode
-    );
-    qrcodeResource.addMethod('GET', getCouponQrcodeIntegration);
-    addCorsOptions(qrcodeResource);
 
     const thumnailBucketProps: Props = {
       domain: this.node.tryGetContext('domain'),
