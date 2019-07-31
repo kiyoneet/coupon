@@ -1,22 +1,13 @@
-import { CouponDynamodbTable } from './../../infrastructures/coupons/coupon-dynamodb-table';
-import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { CoupnUsecase} from './../../domains/coupons/coupon-usecase'
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { CouponUsecase } from './../../domains/coupons/coupon-usecase';
 
-exports.handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+export async function handler(
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> {
   console.log('request:', JSON.stringify(event, undefined, 2));
   try {
     const id: string = event.pathParameters!.id;
-    return await CoupnUsecase.getCouponDetails(id);
-    // const data = await CouponDynamodbTable.getCoupnById(id);
-
-    // return {
-    //   statusCode: 200,
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify(data)
-    // };
-
+    return await CouponUsecase.getCouponDetails(id);
   } catch (error) {
     console.error(error);
     return {
@@ -27,4 +18,4 @@ exports.handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult>
       body: JSON.stringify({ message: 'Internal server error' })
     };
   }
-};
+}

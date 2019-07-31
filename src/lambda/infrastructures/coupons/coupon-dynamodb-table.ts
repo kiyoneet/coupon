@@ -1,25 +1,21 @@
 import * as AWS from 'aws-sdk';
 
-import {
-  DocumentClient,
-  ScanOutput,
-  QueryOutput,
-  GetItemOutput
-} from 'aws-sdk/clients/dynamodb';
+import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 const TABLE_NAME = process.env.TABLE_NAME!;
 const dynamoClient: DocumentClient = new AWS.DynamoDB.DocumentClient();
 
 export class CouponDynamodbTable {
-  public static async getCoupnById(id: string): Promise<GetItemOutput> {
+  public static async getCoupnById(id: string): Promise<any> {
     const param: DocumentClient.GetItemInput = {
       TableName: TABLE_NAME,
       Key: { id }
     };
-    return await dynamoClient.get(param).promise();
+    const result = await dynamoClient.get(param).promise();
+    return result.Item;
   }
 
-  public static async getByTitle(title: string): Promise<QueryOutput> {
+  public static async getByTitle(title: string): Promise<any> {
     const param: DocumentClient.QueryInput = {
       TableName: TABLE_NAME,
       IndexName: 'title',
@@ -31,16 +27,24 @@ export class CouponDynamodbTable {
         ':hkey': title
       }
     };
-    return await dynamoClient.query(param).promise();
+    const result = await dynamoClient.query(param).promise();
+    return result.Items;
   }
-  public static async scan(exclusiveStartKey?: {}): Promise<ScanOutput> {
+  public static async scan(): Promise<any> {
     const param: DocumentClient.ScanInput = {
       TableName: TABLE_NAME
     };
-    if (exclusiveStartKey) {
-      param.ExclusiveStartKey = exclusiveStartKey;
+    let result = await dynamoClient.scan(param).promise();
+    let items = result.Items;
+    while (result.LastEvaluatedKey) {
+      result = await dynamoClient
+        .scan(
+          Object.assign(param, { ExclusiveStartKey: result.LastEvaluatedKey })
+        )
+        .promise();
+      Array.prototype.push(items, result.Items);
     }
 
-    return await dynamoClient.scan(param).promise();
+    return items;
   }
 }
