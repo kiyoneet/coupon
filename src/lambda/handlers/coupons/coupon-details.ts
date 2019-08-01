@@ -6,7 +6,16 @@ export async function handler(
 ): Promise<APIGatewayProxyResult> {
   console.log('request:', JSON.stringify(event, undefined, 2));
   try {
-    const id: string = event.pathParameters!.id;
+    if (event.pathParameters === null) {
+      return {
+        statusCode: 400,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: 'Badrequest.' })
+      };
+    }
+    const id = event.pathParameters!.id;
     return await CouponUsecase.getCouponDetails(id);
   } catch (error) {
     console.error(error);

@@ -29,4 +29,12 @@ describe('coupon-usecase', () => {
       expect(response.body).toEqual(JSON.stringify(mockResultGetCouponById));
     });
   });
+  describe('error', () => {
+    it('getCouponDetials', async () => {
+      const event: APIGatewayProxyEvent = data;
+      event.pathParameters = null;
+      const response = await handler(event);
+      expect(response.statusCode).toBe(400);
+    });
+  });
 });

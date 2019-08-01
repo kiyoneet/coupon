@@ -18,5 +18,5 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false
   },
-  "exclude": ["cdk.out", "__tests__"]
+  "exclude": ["cdk.out", "src/__tests__"]
 }

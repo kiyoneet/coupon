@@ -52,4 +52,14 @@ describe('coupon-usecase', () => {
       );
     });
   });
+  describe('error', () => {
+    it('getCouponByTitle', async () => {
+      const event: APIGatewayProxyEvent = data;
+      event.path = '/coupons';
+      event.pathParameters = null;
+      event.queryStringParameters = { hoge: 'faga' };
+      const response = await handler(event);
+      expect(response.statusCode).toBe(400);
+    });
+  });
 });
